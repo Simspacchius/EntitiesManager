@@ -15,7 +15,6 @@ export default observer(function CustomerForm() {
     customerStore;
   const id = parseInt(useParams().id || "");
   const navigate = useNavigate();
-  //const currDate = new Date();
 
   const [customerForm, setCustomerForm] = useState<CustomerFormValues>({
     name: "",

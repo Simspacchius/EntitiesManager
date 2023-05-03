@@ -64,10 +64,11 @@ export default observer(function CustomerShow() {
             {selectedCustomer && <CustomerCard customer={selectedCustomer} />}
             <EmptyCard/>
             <EmptyCard/>
+            <EmptyCard/>
           </div>
           <Divider className="em-divider" />
           <Container>
-            <SiteList></SiteList>
+            <SiteList/>
           </Container>
         </>
       )}

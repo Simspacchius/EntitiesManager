@@ -103,7 +103,7 @@ body {
 }
 
 .em-card {
-  width: 30%;
+  width: 24%;
 }
 
 .em-card-header {
@@ -112,7 +112,7 @@ body {
 }
 
 .em-card-field {
-  margin-top: 5px;
+  margin-top: 2px;
 }
 
 .ui.divider.em-divider {

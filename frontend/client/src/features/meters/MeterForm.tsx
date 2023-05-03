@@ -6,23 +6,23 @@ import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useStore } from "../../app/stores/store";
 import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
-import { SiteFormValues } from "../../app/models/site";
+import { MeterFormValues } from "../../app/models/meter";
 import MyTextInput from "../../app/common/form/MyTextInput";
+import MyDateInput from "../../app/common/form/MyDateInput";
 
-export default observer(function SiteForm() {
-  const { siteStore, customerStore } = useStore();
-  const { createSite, updateSite, deleteSite, loadSite } = siteStore;
+export default observer(function MeterForm() {
+  const { meterStore, siteStore, customerStore } = useStore();
+  const { createMeter, updateMeter, deleteMeter, loadMeter } = meterStore;
+  const { selectedSite } = siteStore;
   const { selectedCustomer } = customerStore;
   const id = parseInt(useParams().id || "");
   const navigate = useNavigate();
 
-  const [siteForm, setSiteForm] = useState<SiteFormValues>({
+  const [meterForm, setMeterForm] = useState<MeterFormValues>({
     name: "",
-    longitude: 0,
-    latitude: 0,
-    address: "",
-    post_code: "",
-    customer_id: 0,
+    serial_number: "",
+    installation_date: new Date(),
+    site_id: 0,
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -31,8 +31,11 @@ export default observer(function SiteForm() {
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      loadSite(id)
-        .then((site) => setSiteForm(site!))
+      loadMeter(id)
+        .then((meter) => {
+            meter!.installation_date = new Date(meter!.installation_date);
+            setMeterForm(meter!)  
+        })
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => setIsLoading(false));
     } else {
@@ -42,14 +45,14 @@ export default observer(function SiteForm() {
 
   function handleFormSubmit(
     id: number,
-    siteForm: SiteFormValues,
-    formikBag: FormikHelpers<SiteFormValues>
+    meterForm: MeterFormValues,
+    formikBag: FormikHelpers<MeterFormValues>
   ) {
     setIsSaving(true);
     if (id === 0) {
-      createSite(siteForm)
+      createMeter(meterForm)
         .then((newId) => {
-          if (newId && newId > 0) navigate(`/sitesShow/${newId}`);
+          if (newId && newId > 0) navigate(`/metersShow/${newId}`);
         })
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => {
@@ -57,8 +60,8 @@ export default observer(function SiteForm() {
           setIsSaving(false);
         });
     } else {
-      updateSite(id, siteForm)
-        .then(() => navigate(`/customersShow/${selectedCustomer!.id}`))
+      updateMeter(id, meterForm)
+        .then(() => navigate(`/sitesShow/${selectedSite!.id}`))
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => {
           formikBag.setSubmitting(false);
@@ -73,8 +76,8 @@ export default observer(function SiteForm() {
   ) {
     e.preventDefault();
     setIsDeleting(true);
-    deleteSite(id)
-      .then(() => navigate(`/customersShow/${selectedCustomer!.id}`))
+    deleteMeter(id)
+      .then(() => navigate(`/sitesShow/${selectedSite!.id}`))
       .catch((error) => console.log(JSON.stringify(error)))
       .finally(() => setIsDeleting(false));
   }
@@ -84,26 +87,17 @@ export default observer(function SiteForm() {
       .trim()
       .required("Name required")
       .max(200, "Allowed maximum is 200 characters"),
-    longitude: Yup.number()
-      .min(-180, "Minimum at least -180")
-      .max(180, "Allowed maximum is 180"),
-    latitude: Yup.number()
-      .min(-90, "Minimum at least -90")
-      .max(90, "Allowed maximum is 90"),
-    address: Yup.string()
+    serial_number: Yup.string()
       .trim()
-      .required("Address required")
-      .max(300, "Allowed maximum is 300 characters"),
-    post_code: Yup.string()
-      .trim()
-      .required("Post Code required")
-      .max(10, "Allowed maximum is 10 characters"),
+      .required("Serial Number required")
+      .max(30, "Allowed maximum is 30 characters"),
+    installation_date: Yup.date().required("Installation Date required"),
   });
 
   return (
     <>
       {isLoading ? (
-        <LoadingComponent content="Loading site..." />
+        <LoadingComponent content="Loading meter..." />
       ) : (
         <>
           <Container className="em-page-breadcrumb-container">
@@ -120,22 +114,30 @@ export default observer(function SiteForm() {
                 Customer
               </Breadcrumb.Section>
               <Breadcrumb.Divider icon="right arrow" />
-              <Breadcrumb.Section active>Site Form</Breadcrumb.Section>
+              <Breadcrumb.Section
+                link
+                as={Link}
+                to={`/sitesShow/${selectedSite!.id}`}
+              >
+                Site
+              </Breadcrumb.Section>
+              <Breadcrumb.Divider icon="right arrow" />
+              <Breadcrumb.Section active>Meter Form</Breadcrumb.Section>
             </Breadcrumb>
           </Container>
 
           <Container className="em-page-header-container">
             <Header as="h2" className="em-page-header">
-              {id === 0 ? "New" : "Edit"} Site
+              {id === 0 ? "New" : "Edit"} Meter
             </Header>
           </Container>
 
           <Formik
             enableReinitialize
             validationSchema={validationSchema}
-            initialValues={siteForm}
+            initialValues={meterForm}
             onSubmit={(values, actions) => {
-              values.customer_id = selectedCustomer!.id;
+              values.site_id = selectedSite!.id;
               handleFormSubmit(id, values, actions);
             }}
           >
@@ -152,28 +154,15 @@ export default observer(function SiteForm() {
                   type="text"
                 />
                 <MyTextInput
-                  label="Longitude"
-                  name="longitude"
-                  placeholder="Longitude"
-                  type="number"
-                />
-                <MyTextInput
-                  label="Latitude"
-                  name="latitude"
-                  placeholder="Latitude"
-                  type="number"
-                />
-                <MyTextInput
-                  label="Address"
-                  name="address"
-                  placeholder="Address"
+                  label="Serial Number"
+                  name="serial_number"
+                  placeholder="Serial Number"
                   type="text"
                 />
-                <MyTextInput
-                  label="Post Code"
-                  name="post_code"
-                  placeholder="Post Code"
-                  type="text"
+                <MyDateInput
+                  name="installation_date"
+                  placeholderText="Installation Date"
+                  dateFormat="MMMM d, yyyy"
                 />
                 <Container className="em-buttons-container">
                   <Button
@@ -187,7 +176,7 @@ export default observer(function SiteForm() {
                   />
                   <Button
                     as={Link}
-                    to={`/customersShow/${selectedCustomer!.id}`}
+                    to={`/sitesShow/${selectedSite!.id}`}
                     floated="right"
                     basic
                     color="teal"
