@@ -2,16 +2,16 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { Circuit, CircuitFormValues } from "../models/circuit";
 import agent from "../api/agent";
 
-export default class CircuitStore {
-  circuitRegistry = new Map<number, Circuit>();
-  selectedCircuit?: Circuit = undefined;
+export default class SubCircuitStore {
+  subCircuitRegistry = new Map<number, Circuit>();
+  selectedSubCircuit?: Circuit = undefined;
 
   constructor() {
     makeAutoObservable(this);
   }
 
   get circuits() {
-    return Array.from(this.circuitRegistry.values());
+    return Array.from(this.subCircuitRegistry.values());
   }
 
   loadCircuitsByMeter = async (meterId: number) => {
@@ -28,10 +28,24 @@ export default class CircuitStore {
     }
   };
 
+  loadCircuitsByParentCircuit = async (parentCircuitId: number) => {
+    try {
+      const circuits = await agent.Circuits.listByParentCircuit(parentCircuitId);
+      runInAction(() => {
+        circuits.forEach((circuit) => {
+          this.setCircuit(circuit);
+        });
+        this.sortCircuits();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   loadCircuit = async (id: number) => {
     let circuit = this.getCircuit(id);
     if (circuit) {
-      this.selectedCircuit = circuit;
+      this.selectedSubCircuit = circuit;
       return circuit;
     } else {
       try {
@@ -40,7 +54,7 @@ export default class CircuitStore {
           runInAction(() => {
             this.setCircuit(circuit!);
             this.sortCircuits();
-            this.selectedCircuit = circuit;
+            this.selectedSubCircuit = circuit;
           });
         }
         return circuit;
@@ -54,9 +68,9 @@ export default class CircuitStore {
     try {
       const newCircuit: Circuit = await agent.Circuits.create(circuit);
       runInAction(() => {
-        this.circuitRegistry.set(newCircuit.id, newCircuit);
+        this.subCircuitRegistry.set(newCircuit.id, newCircuit);
         this.sortCircuits();
-        this.selectedCircuit = newCircuit;
+        this.selectedSubCircuit = newCircuit;
       });
       return newCircuit.id;
     } catch (error) {
@@ -71,9 +85,9 @@ export default class CircuitStore {
         circuit
       );
       runInAction(() => {
-        this.circuitRegistry.set(updatedCircuit.id, updatedCircuit);
+        this.subCircuitRegistry.set(updatedCircuit.id, updatedCircuit);
         this.sortCircuits();
-        this.selectedCircuit = updatedCircuit;
+        this.selectedSubCircuit = updatedCircuit;
       });
     } catch (error) {
       console.log(error);
@@ -84,7 +98,7 @@ export default class CircuitStore {
     try {
       await agent.Circuits.delete(id);
       runInAction(() => {
-        this.circuitRegistry.delete(id);
+        this.subCircuitRegistry.delete(id);
         this.sortCircuits();
       });
     } catch (error) {
@@ -93,11 +107,11 @@ export default class CircuitStore {
   };
 
   private setCircuit = (circuit: Circuit) => {
-    this.circuitRegistry.set(circuit.id, circuit);
+    this.subCircuitRegistry.set(circuit.id, circuit);
   };
 
   private getCircuit = (id: number) => {
-    return this.circuitRegistry.get(id);
+    return this.subCircuitRegistry.get(id);
   };
 
   private sortCircuits = () => {
