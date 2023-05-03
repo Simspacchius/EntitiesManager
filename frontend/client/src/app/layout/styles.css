@@ -1,0 +1,90 @@
+body {
+  background-color: #eaeaea !important;
+}
+
+.ui.inverted.top.fixed.menu {
+  background-image: linear-gradient(
+    90deg,
+    rgba(51, 64, 50, 1) 0%,
+    rgba(0, 181, 173, 1) 100%
+  ) !important;
+}
+
+.react-calendar {
+  width: 100%;
+  border: none;
+  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
+}
+
+/*home page styles*/
+
+.masthead {
+  display: flex;
+  align-items: center;
+  background-image: linear-gradient(
+    90deg,
+    rgba(51, 64, 50, 1) 0%,
+    rgba(0, 181, 173, 1) 100%
+  ) !important;
+  height: 100vh;
+}
+
+.masthead .ui.menu .ui.button,
+.ui.menu a.ui.inverted.button {
+  margin-left: 0.5em;
+}
+
+.masthead h1.ui.header {
+  font-size: 4em;
+  font-weight: normal;
+}
+
+.masthead h2 {
+  font-size: 1.7em;
+  font-weight: normal;
+}
+
+/*end home page styles*/
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.em-main-container {
+  background-color: white;
+  padding: 40px 60px;
+  margin-top: 7em;
+}
+
+.ui.container.em-page-header-container {
+  padding-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ui.container.em-page-breadcrumb-container {
+  padding-bottom: 30px;
+}
+
+.ui.container.em-page-header-container .ui.header {
+  color: teal;
+  margin: 0px;
+  min-height: 36px;
+}
+
+.em-buttons-container {
+  margin-top: 30px;
+  min-height: 36px;
+}
+
+.ui.container.em-font-size-xs { font-size: 10px; }
+.ui.container.em-font-size-s { font-size: 12px; }
+.ui.container.em-font-size-m { font-size: 14px; }
+.ui.container.em-font-size-l { font-size: 17px; }
+.ui.container.em-font-size-xl { font-size: 20px; }
+.ui.container.em-font-size-xxl { font-size: 23px; }
+
+.ui.container.em-show-field {
+margin-top: 5px;
+}

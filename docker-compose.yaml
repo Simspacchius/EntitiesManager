@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+
+  postgres:
+    container_name: postgres
+    image: postgres:13
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${PG_DB_NAME}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - PGDATA=${PG_DATA}
+    ports:
+      - $PG_PORT:$PG_PORT
+
+  adonisbackend:
+    container_name: adonisbackend
+    restart: always
+    build:
+      context: ./adonis-backend/backend
+      target: dependencies
+    ports:
+      - $ADONIS_PORT:$ADONIS_PORT 
+      - $ADONIS_PORT2:$ADONIS_PORT2
+    environment:
+      - PG_HOST=postgres
+    volumes:
+      - ./adonis-backend/backend:/home/node/app
+    command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend/client
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - $FRONTEND_PORT:$FRONTEND_PORT
+    restart: always
+    depends_on:
+      - adonisbackend
+
+volumes:
+  postgres_volume:
