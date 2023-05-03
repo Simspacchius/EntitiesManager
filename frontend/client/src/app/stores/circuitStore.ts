@@ -18,6 +18,7 @@ export default class CircuitStore {
     try {
       const circuits = await agent.Circuits.listByMeter(meterId);
       runInAction(() => {
+        this.clearCircuits();
         circuits.forEach((circuit) => {
           this.setCircuit(circuit);
         });
@@ -100,8 +101,13 @@ export default class CircuitStore {
     return this.circuitRegistry.get(id);
   };
 
+  private clearCircuits = () => {
+    this.circuitRegistry.clear();
+  };
+
   private sortCircuits = () => {
     const sortedCircuits = this.circuits.sort((a, b) => b.id - a.id);
+    this.clearCircuits();
     sortedCircuits.forEach((circuit) => {
       this.setCircuit(circuit);
     });

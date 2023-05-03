@@ -78,13 +78,44 @@ body {
   min-height: 36px;
 }
 
-.ui.container.em-font-size-xs { font-size: 10px; }
-.ui.container.em-font-size-s { font-size: 12px; }
-.ui.container.em-font-size-m { font-size: 14px; }
-.ui.container.em-font-size-l { font-size: 17px; }
-.ui.container.em-font-size-xl { font-size: 20px; }
-.ui.container.em-font-size-xxl { font-size: 23px; }
+.ui.container.em-font-size-xs {
+  font-size: 10px;
+}
+.ui.container.em-font-size-s {
+  font-size: 12px;
+}
+.ui.container.em-font-size-m {
+  font-size: 14px;
+}
+.ui.container.em-font-size-l {
+  font-size: 17px;
+}
+.ui.container.em-font-size-xl {
+  font-size: 20px;
+}
+.ui.container.em-font-size-xxl {
+  font-size: 23px;
+}
 
-.ui.container.em-show-field {
-margin-top: 5px;
+.em-cards-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.em-card {
+  width: 30%;
+}
+
+.em-card-header {
+  font-size: 18px;
+  color: teal;
+}
+
+.em-card-field {
+  margin-top: 5px;
+}
+
+.ui.divider.em-divider {
+  margin-top: 30px;
+  margin-bottom: 30px;
 }

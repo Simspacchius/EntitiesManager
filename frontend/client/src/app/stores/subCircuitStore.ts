@@ -18,6 +18,7 @@ export default class SubCircuitStore {
     try {
       const circuits = await agent.Circuits.listByMeter(meterId);
       runInAction(() => {
+        this.clearCircuits();
         circuits.forEach((circuit) => {
           this.setCircuit(circuit);
         });
@@ -30,7 +31,9 @@ export default class SubCircuitStore {
 
   loadCircuitsByParentCircuit = async (parentCircuitId: number) => {
     try {
-      const circuits = await agent.Circuits.listByParentCircuit(parentCircuitId);
+      const circuits = await agent.Circuits.listByParentCircuit(
+        parentCircuitId
+      );
       runInAction(() => {
         circuits.forEach((circuit) => {
           this.setCircuit(circuit);
@@ -74,16 +77,13 @@ export default class SubCircuitStore {
       });
       return newCircuit.id;
     } catch (error) {
-       console.log(error);
+      console.log(error);
     }
   };
 
   updateCircuit = async (id: number, circuit: CircuitFormValues) => {
     try {
-      const updatedCircuit: Circuit = await agent.Circuits.update(
-        id,
-        circuit
-      );
+      const updatedCircuit: Circuit = await agent.Circuits.update(id, circuit);
       runInAction(() => {
         this.subCircuitRegistry.set(updatedCircuit.id, updatedCircuit);
         this.sortCircuits();
@@ -114,8 +114,13 @@ export default class SubCircuitStore {
     return this.subCircuitRegistry.get(id);
   };
 
+  private clearCircuits = () => {
+    this.subCircuitRegistry.clear();
+  };
+
   private sortCircuits = () => {
     const sortedCircuits = this.circuits.sort((a, b) => b.id - a.id);
+    this.clearCircuits();
     sortedCircuits.forEach((circuit) => {
       this.setCircuit(circuit);
     });

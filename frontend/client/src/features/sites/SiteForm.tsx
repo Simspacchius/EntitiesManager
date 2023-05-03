@@ -6,21 +6,24 @@ import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useStore } from "../../app/stores/store";
 import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
-import { CustomerFormValues } from "../../app/models/customer";
+import { SiteFormValues } from "../../app/models/site";
 import MyTextInput from "../../app/common/form/MyTextInput";
 
-export default observer(function CustomerForm() {
-  const { customerStore } = useStore();
-  const { createCustomer, updateCustomer, deleteCustomer, loadCustomer } =
-    customerStore;
+export default observer(function SiteForm() {
+  const { siteStore, customerStore } = useStore();
+  const { createSite, updateSite, deleteSite, loadSite } = siteStore;
+  const { selectedCustomer } = customerStore;
   const id = parseInt(useParams().id || "");
   const navigate = useNavigate();
   //const currDate = new Date();
 
-  const [customerForm, setCustomerForm] = useState<CustomerFormValues>({
+  const [siteForm, setSiteForm] = useState<SiteFormValues>({
     name: "",
-    email: "",
-    vat_number: "",
+    longitude: 0,
+    latitude: 0,
+    address: "",
+    post_code: "",
+    customer_id: 0,
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -29,8 +32,8 @@ export default observer(function CustomerForm() {
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      loadCustomer(id)
-        .then((customer) => setCustomerForm(customer!))
+      loadSite(id)
+        .then((site) => setSiteForm(site!))
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => setIsLoading(false));
     } else {
@@ -40,14 +43,14 @@ export default observer(function CustomerForm() {
 
   function handleFormSubmit(
     id: number,
-    customerForm: CustomerFormValues,
-    formikBag: FormikHelpers<CustomerFormValues>
+    siteForm: SiteFormValues,
+    formikBag: FormikHelpers<SiteFormValues>
   ) {
     setIsSaving(true);
     if (id === 0) {
-      createCustomer(customerForm)
+      createSite(siteForm)
         .then((newId) => {
-          if (newId && newId > 0) navigate(`/customersShow/${newId}`);
+          if (newId && newId > 0) navigate(`/sitesShow/${newId}`);
         })
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => {
@@ -55,8 +58,8 @@ export default observer(function CustomerForm() {
           setIsSaving(false);
         });
     } else {
-      updateCustomer(id, customerForm)
-        .then(() => navigate("/customers"))
+      updateSite(id, siteForm)
+        .then(() => navigate(`/customersShow/${selectedCustomer!.id}`))
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => {
           formikBag.setSubmitting(false);
@@ -71,8 +74,8 @@ export default observer(function CustomerForm() {
   ) {
     e.preventDefault();
     setIsDeleting(true);
-    deleteCustomer(id)
-      .then(() => navigate("/customers"))
+    deleteSite(id)
+      .then(() => navigate(`/customersShow/${selectedCustomer!.id}`))
       .catch((error) => console.log(JSON.stringify(error)))
       .finally(() => setIsDeleting(false));
   }
@@ -82,21 +85,26 @@ export default observer(function CustomerForm() {
       .trim()
       .required("Name required")
       .max(200, "Allowed maximum is 200 characters"),
-    email: Yup.string()
+    longitude: Yup.number()
+      .min(-180, "Minimum at least -180")
+      .max(180, "Allowed maximum is 180"),
+    latitude: Yup.number()
+      .min(-90, "Minimum at least -90")
+      .max(90, "Allowed maximum is 90"),
+    address: Yup.string()
       .trim()
-      .email("Email not valid")
-      .required("Email required")
-      .max(255, "Allowed maximum is 255 characters"),
-    vat_number: Yup.string()
+      .required("Address required")
+      .max(300, "Allowed maximum is 300 characters"),
+    post_code: Yup.string()
       .trim()
-      .required("Vat Number required")
-      .max(20, "Allowed maximum is 20 characters"),
+      .required("Post Code required")
+      .max(10, "Allowed maximum is 10 characters"),
   });
 
   return (
     <>
       {isLoading ? (
-        <LoadingComponent content="Loading customer..." />
+        <LoadingComponent content="Loading site..." />
       ) : (
         <>
           <Container className="em-page-breadcrumb-container">
@@ -105,23 +113,32 @@ export default observer(function CustomerForm() {
                 Customers
               </Breadcrumb.Section>
               <Breadcrumb.Divider icon="right arrow" />
-              <Breadcrumb.Section active>Customer Form</Breadcrumb.Section>
+              <Breadcrumb.Section
+                link
+                as={Link}
+                to={`/customersShow/${selectedCustomer!.id}`}
+              >
+                Customer
+              </Breadcrumb.Section>
+              <Breadcrumb.Divider icon="right arrow" />
+              <Breadcrumb.Section active>Site Form</Breadcrumb.Section>
             </Breadcrumb>
           </Container>
 
           <Container className="em-page-header-container">
             <Header as="h2" className="em-page-header">
-              {id === 0 ? "New" : "Edit"} Customer
+              {id === 0 ? "New" : "Edit"} Site
             </Header>
           </Container>
 
           <Formik
             enableReinitialize
             validationSchema={validationSchema}
-            initialValues={customerForm}
-            onSubmit={(values, actions) =>
-              handleFormSubmit(id, values, actions)
-            }
+            initialValues={siteForm}
+            onSubmit={(values, actions) => {
+              values.customer_id = selectedCustomer!.id;
+              handleFormSubmit(id, values, actions);
+            }}
           >
             {({ handleSubmit, isValid, isSubmitting, dirty }) => (
               <Form
@@ -136,15 +153,27 @@ export default observer(function CustomerForm() {
                   type="text"
                 />
                 <MyTextInput
-                  label="Email"
-                  name="email"
-                  placeholder="Email"
+                  label="Longitude"
+                  name="longitude"
+                  placeholder="Longitude"
+                  type="number"
+                />
+                <MyTextInput
+                  label="Latitude"
+                  name="latitude"
+                  placeholder="Latitude"
+                  type="number"
+                />
+                <MyTextInput
+                  label="Address"
+                  name="address"
+                  placeholder="Address"
                   type="text"
                 />
                 <MyTextInput
-                  label="Vat Number"
-                  name="vat_number"
-                  placeholder="Vat Number"
+                  label="Post Code"
+                  name="post_code"
+                  placeholder="Post Code"
                   type="text"
                 />
                 <Container className="em-buttons-container">
@@ -159,7 +188,7 @@ export default observer(function CustomerForm() {
                   />
                   <Button
                     as={Link}
-                    to="/customers"
+                    to={`/customersShow/${selectedCustomer!.id}`}
                     floated="right"
                     basic
                     color="teal"

@@ -18,6 +18,7 @@ export default class SiteStore {
     try {
       const sites = await agent.Sites.listByCustomer(customerId);
       runInAction(() => {
+        this.clearSites();
         sites.forEach((site) => {
           this.setSite(site);
         });
@@ -97,8 +98,13 @@ export default class SiteStore {
     return this.siteRegistry.get(id);
   };
 
+  private clearSites = () => {
+    this.siteRegistry.clear();
+  };
+
   private sortSites = () => {
     const sortedSites = this.sites.sort((a, b) => b.id - a.id);
+    this.clearSites();
     sortedSites.forEach((site) => {
       this.setSite(site);
     });

@@ -10,44 +10,54 @@ import {
 } from "semantic-ui-react";
 import { useStore } from "../../app/stores/store";
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import { Customer } from "../../app/models/customer";
-import CustomerCard from "./CustomerCard";
+import { Site } from "../../app/models/site";
+import SiteCard from "./SiteCard";
+import CustomerCard from "../customers/CustomerCard"
 import EmptyCard from "../../app/layout/EmptyCard"
 import SiteList from "../sites/SiteList";
 
-export default observer(function CustomerShow() {
-  const { customerStore } = useStore();
-  const { selectedCustomer, loadCustomer } = customerStore;
+export default observer(function SiteShow() {
+  const { siteStore, customerStore } = useStore();
+  const { selectedSite, loadSite } = siteStore;
+  const { selectedCustomer } = customerStore;
   const id = parseInt(useParams().id || "");
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setIsLoading(true);
-    loadCustomer(id)
+    loadSite(id)
       .catch((error) => console.log(JSON.stringify(error)))
       .finally(() => setIsLoading(false));
   }, []);
 
   return (
     <>
-      <Container className="em-page-breadcrumb-container">
-        <Breadcrumb>
-          <Breadcrumb.Section link as={Link} to="/customers">
-            Customers
-          </Breadcrumb.Section>
-          <Breadcrumb.Divider icon="right arrow" />
-          <Breadcrumb.Section active>Customer</Breadcrumb.Section>
-        </Breadcrumb>
-      </Container>
+          <Container className="em-page-breadcrumb-container">
+            <Breadcrumb>
+              <Breadcrumb.Section link as={Link} to="/customers">
+                Customers
+              </Breadcrumb.Section>
+              <Breadcrumb.Divider icon="right arrow" />
+              <Breadcrumb.Section
+                link
+                as={Link}
+                to={`/customersShow/${selectedCustomer!.id}`}
+              >
+                Customer
+              </Breadcrumb.Section>
+              <Breadcrumb.Divider icon="right arrow" />
+              <Breadcrumb.Section active>Site</Breadcrumb.Section>
+            </Breadcrumb>
+          </Container>
 
       <Container className="em-page-header-container">
         <Header as="h2" className="em-page-header">
-          Customer
+          Site
         </Header>
         <Button
           as={Link}
-          to="/customers"
+          to={`/customersShow/${selectedCustomer!.id}`}
           floated="right"
           basic
           color="teal"
@@ -57,18 +67,18 @@ export default observer(function CustomerShow() {
       </Container>
 
       {isLoading ? (
-        <LoadingComponent content="Loading customer..." />
+        <LoadingComponent content="Loading site..." />
       ) : (
         <>
           <div className="em-cards-container">
+            {selectedSite && <SiteCard site={selectedSite} />}
             {selectedCustomer && <CustomerCard customer={selectedCustomer} />}
-            <EmptyCard/>
             <EmptyCard/>
           </div>
           <Divider className="em-divider" />
-          <Container>
+          {/* <Container>
             <SiteList></SiteList>
-          </Container>
+          </Container> */}
         </>
       )}
     </>

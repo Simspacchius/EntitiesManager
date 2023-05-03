@@ -2,6 +2,8 @@ import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom";
 import CustomerList from "../../features/customers/CustomerList"
 import CustomerShow from "../../features/customers/CustomerShow"
 import CustomerForm from "../../features/customers/CustomerForm"
+import SiteShow from "../../features/sites/SiteShow"
+import SiteForm from "../../features/sites/SiteForm"
 import NotFound from "../../features/errors/NotFound";
 import ServerError from "../../features/errors/ServerError";
 import TestErrors from "../../features/errors/TestError";
@@ -15,8 +17,8 @@ export const routes: RouteObject[] = [
             {path: 'customers', element: <CustomerList />},
             {path: 'customersShow/:id', element: <CustomerShow />},
             {path: 'customersForm/:id', element: <CustomerForm />},
-            {path: 'sitesShow/:id', element: <CustomerShow />},
-            {path: 'sitesForm/:id', element: <CustomerForm />},
+            {path: 'sitesShow/:id', element: <SiteShow />},
+            {path: 'sitesForm/:id', element: <SiteForm />},
             {path: 'metersShow/:id', element: <CustomerShow />},
             {path: 'metersForm/:id', element: <CustomerForm />},
             {path: 'circuitsShow/:id', element: <CustomerShow />},

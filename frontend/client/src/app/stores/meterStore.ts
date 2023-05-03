@@ -18,6 +18,7 @@ export default class MeterStore {
     try {
       const meters = await agent.Meters.listBySite(siteId);
       runInAction(() => {
+        this.clearMeters();
         meters.forEach((meter) => {
           this.setMeter(meter);
         });
@@ -100,8 +101,13 @@ export default class MeterStore {
     return this.meterRegistry.get(id);
   };
 
+  private clearMeters = () => {
+    this.meterRegistry.clear();
+  };
+
   private sortMeters = () => {
     const sortedMeters = this.meters.sort((a, b) => b.id - a.id);
+    this.clearMeters();
     sortedMeters.forEach((meter) => {
       this.setMeter(meter);
     });
