@@ -14,9 +14,9 @@ export default class SiteStore {
     return Array.from(this.siteRegistry.values());
   }
 
-  loadSites = async (parentId: number) => {
+  loadSitesByCustomer = async (customerId: number) => {
     try {
-      const sites = await agent.Sites.list(parentId);
+      const sites = await agent.Sites.listByCustomer(customerId);
       runInAction(() => {
         sites.forEach((site) => {
           this.setSite(site);
@@ -60,16 +60,13 @@ export default class SiteStore {
       });
       return newSite.id;
     } catch (error) {
-       console.log(error);
+      console.log(error);
     }
   };
 
   updateSite = async (id: number, site: SiteFormValues) => {
     try {
-      const updatedSite: Site = await agent.Sites.update(
-        id,
-        site
-      );
+      const updatedSite: Site = await agent.Sites.update(id, site);
       runInAction(() => {
         this.siteRegistry.set(updatedSite.id, updatedSite);
         this.sortSites();

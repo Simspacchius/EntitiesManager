@@ -14,9 +14,9 @@ export default class MeterStore {
     return Array.from(this.meterRegistry.values());
   }
 
-  loadMeters = async (parentId: number) => {
+  loadMetersBySite = async (siteId: number) => {
     try {
-      const meters = await agent.Meters.list(parentId);
+      const meters = await agent.Meters.listBySite(siteId);
       runInAction(() => {
         meters.forEach((meter) => {
           this.setMeter(meter);

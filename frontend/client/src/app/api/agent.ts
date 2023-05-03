@@ -73,7 +73,8 @@ const Customers = {
 }
 
 const Sites = {
-    list: (parentId: number) => requests.get<Site[]>(`/sites/${parentId}`),
+    list: () => requests.get<Site[]>('/sites'),
+    listByCustomer: (customerId: number) => requests.get<Site[]>(`/sitesByCustomerId/${customerId}`),
     details: (id: number) => requests.get<Site>(`/sites/${id}`),
     create: (site: SiteFormValues) => requests.post<Site>('/sites', site),
     update: (id: number, site: SiteFormValues) => requests.put<Site>(`/sites/${id}`, site),
@@ -81,7 +82,8 @@ const Sites = {
 }
 
 const Meters = {
-    list: (parentId: number) => requests.get<Meter[]>(`/meters/${parentId}`),
+    list: () => requests.get<Meter[]>('/meters'),
+    listBySite: (siteId: number) => requests.get<Meter[]>(`/metersBySiteId/${siteId}`),
     details: (id: number) => requests.get<Meter>(`/meters/${id}`),
     create: (meter: MeterFormValues) => requests.post<Meter>('/meters', meter),
     update: (id: number, meter: MeterFormValues) => requests.put<Meter>(`/meters/${id}`, meter),
@@ -89,7 +91,9 @@ const Meters = {
 }
 
 const Circuits = {
-    list: (parentId: number) => requests.get<Circuit[]>(`/circuits/${parentId}`),
+    list: () => requests.get<Circuit[]>('/circuits'),
+    listByMeter: (meterId: number) => requests.get<Circuit[]>(`/circuitsByMeterId/${meterId}`),
+    listByParentCircuit: (parentCircuitId: number) => requests.get<Circuit[]>(`/circuitsByParentCircuitId/${parentCircuitId}`),
     details: (id: number) => requests.get<Circuit>(`/circuits/${id}`),
     create: (circuit: CircuitFormValues) => requests.post<Circuit>('/circuits', circuit),
     update: (id: number, circuit: CircuitFormValues) => requests.put<Circuit>(`/circuits/${id}`, circuit),

@@ -20,13 +20,14 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async () => {
-  return { hello: 'world' }
-})
-
 Route.resource('customers', 'CustomersController')
+
 Route.resource('sites', 'SitesController')
+Route.get('/sitesByCustomerId/:customerId', 'SitesController.getAllByCustomerId')
+
 Route.resource('meters', 'MetersController')
+Route.get('/metersBySiteId/:siteId', 'MetersController.getAllBySiteId')
+
 Route.resource('circuits', 'CircuitsController')
 Route.get('/circuitsByMeterId/:meterId', 'CircuitsController.getAllByMeterId')
 Route.get('/circuitsByParentCircuitId/:parentCircuitId', 'CircuitsController.getAllByParentCircuitId')

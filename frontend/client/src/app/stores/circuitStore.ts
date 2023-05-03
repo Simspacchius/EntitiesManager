@@ -14,9 +14,23 @@ export default class CircuitStore {
     return Array.from(this.circuitRegistry.values());
   }
 
-  loadCircuits = async (parentId: number) => {
+  loadCircuitsByMeter = async (meterId: number) => {
     try {
-      const circuits = await agent.Circuits.list(parentId);
+      const circuits = await agent.Circuits.listByMeter(meterId);
+      runInAction(() => {
+        circuits.forEach((circuit) => {
+          this.setCircuit(circuit);
+        });
+        this.sortCircuits();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  loadCircuitsByParentCircuit = async (parentCircuitId: number) => {
+    try {
+      const circuits = await agent.Circuits.listByParentCircuit(parentCircuitId);
       runInAction(() => {
         circuits.forEach((circuit) => {
           this.setCircuit(circuit);
