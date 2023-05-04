@@ -10,10 +10,11 @@ import { CircuitFormValues } from "../../app/models/circuit";
 import MyTextInput from "../../app/common/form/MyTextInput";
 import MyDateInput from "../../app/common/form/MyDateInput";
 
-export default observer(function CircuitForm() {
-  const { circuitStore, meterStore, siteStore, customerStore } = useStore();
+export default observer(function SubCircuitForm() {
+  const { subCircuitStore, circuitStore, meterStore, siteStore, customerStore } = useStore();
   const { createCircuit, updateCircuit, deleteCircuit, loadCircuit } =
-    circuitStore;
+  subCircuitStore;
+  const { selectedCircuit } = circuitStore;
   const { selectedMeter } = meterStore;
   const { selectedSite } = siteStore;
   const { selectedCustomer } = customerStore;
@@ -55,7 +56,7 @@ export default observer(function CircuitForm() {
     if (id === 0) {
       createCircuit(circuitForm)
         .then((newId) => {
-          if (newId && newId > 0) navigate(`/circuitsShow/${newId}`);
+          if (newId && newId > 0) navigate(`/circuitsShow/${selectedCircuit!.id}`);
         })
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => {
@@ -64,7 +65,7 @@ export default observer(function CircuitForm() {
         });
     } else {
       updateCircuit(id, circuitForm)
-        .then(() => navigate(`/metersShow/${selectedMeter!.id}`))
+        .then(() => navigate(`/circuitsShow/${selectedCircuit!.id}`))
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => {
           formikBag.setSubmitting(false);
@@ -80,7 +81,7 @@ export default observer(function CircuitForm() {
     e.preventDefault();
     setIsDeleting(true);
     deleteCircuit(id)
-      .then(() => navigate(`/metersShow/${selectedMeter!.id}`))
+      .then(() => navigate(`/circuitsShow/${selectedCircuit!.id}`))
       .catch((error) => console.log(JSON.stringify(error)))
       .finally(() => setIsDeleting(false));
   }
@@ -96,7 +97,7 @@ export default observer(function CircuitForm() {
   return (
     <>
       {isLoading ? (
-        <LoadingComponent content="Loading circuit..." />
+        <LoadingComponent content="Loading sub circuit..." />
       ) : (
         <>
           <Container className="em-page-breadcrumb-container">
@@ -129,13 +130,21 @@ export default observer(function CircuitForm() {
                 Meter
               </Breadcrumb.Section>
               <Breadcrumb.Divider icon="right arrow" />
-              <Breadcrumb.Section active>Circuit Form</Breadcrumb.Section>
+              <Breadcrumb.Section
+                link
+                as={Link}
+                to={`/circuitsShow/${selectedCircuit!.id}`}
+              >
+                Circuit
+              </Breadcrumb.Section>
+              <Breadcrumb.Divider icon="right arrow" />
+              <Breadcrumb.Section active>Sub Circuit Form</Breadcrumb.Section>
             </Breadcrumb>
           </Container>
 
           <Container className="em-page-header-container">
             <Header as="h2" className="em-page-header">
-              {id === 0 ? "New" : "Edit"} Circuit
+              {id === 0 ? "New" : "Edit"} Sub Circuit
             </Header>
           </Container>
 
@@ -145,7 +154,7 @@ export default observer(function CircuitForm() {
             initialValues={circuitForm}
             onSubmit={(values, actions) => {
               values.meter_id = selectedMeter!.id;
-              values.parent_circuit_id = null;
+              values.parent_circuit_id = selectedCircuit!.id;
               handleFormSubmit(id, values, actions);
             }}
           >
@@ -178,7 +187,7 @@ export default observer(function CircuitForm() {
                   />
                   <Button
                     as={Link}
-                    to={`/metersShow/${selectedMeter!.id}`}
+                    to={`/circuitsShow/${selectedCircuit!.id}`}
                     floated="right"
                     basic
                     color="teal"

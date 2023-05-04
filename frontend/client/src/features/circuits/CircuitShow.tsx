@@ -15,7 +15,7 @@ import CircuitCard from "./CircuitCard";
 import MeterCard from "../meters/MeterCard";
 import SiteCard from "../sites/SiteCard";
 import CustomerCard from "../customers/CustomerCard";
-import CircuitList from "../circuits/CircuitList";
+import SubCircuitList from "../subCircuits/SubCircuitList";
 
 export default observer(function CircuitShow() {
   const { circuitStore, meterStore, siteStore, customerStore } = useStore();
@@ -97,9 +97,9 @@ export default observer(function CircuitShow() {
             {selectedCustomer && <CustomerCard customer={selectedCustomer} />}
           </div>
           <Divider className="em-divider" />
-          {/* <Container>
-            <CircuitList />
-          </Container> */}
+          <Container>
+            <SubCircuitList />
+          </Container>
         </>
       )}
     </>

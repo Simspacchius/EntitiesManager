@@ -118,3 +118,11 @@ body {
   margin-top: 30px;
   margin-bottom: 30px;
 }
+
+.em-blank-slate {
+  text-align: center;
+}
+
+.em-blank-slate-item {
+  padding-top: 30px;
+}

@@ -1,40 +1,36 @@
 import { observer } from "mobx-react-lite";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  Header,
-  Table,
-  Button,
-  Container
-} from "semantic-ui-react";
+import { Header, Table, Button, Container } from "semantic-ui-react";
 import { useStore } from "../../app/stores/store";
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import CircuitListItem from "./CircuitListItem";
+import SubCircuitListItem from "./SubCircuitListItem";
 import BlankSlate from "../../app/common/BlankSlate";
 
-export default observer(function CircuitList() {
-  const { circuitStore, meterStore } = useStore();
-  const { circuitRegistry, circuits, loadCircuitsByMeter } = circuitStore;
-  const { selectedMeter } = meterStore;
+export default observer(function SubCircuitList() {
+  const { subCircuitStore, circuitStore } = useStore();
+  const { subCircuitRegistry, subCircuits, loadCircuitsByParentCircuit } =
+    subCircuitStore;
+  const { selectedCircuit } = circuitStore;
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setIsLoading(true);
-    loadCircuitsByMeter(selectedMeter!.id)
+    loadCircuitsByParentCircuit(selectedCircuit!.id)
       .catch((error) => console.log(JSON.stringify(error)))
       .finally(() => setIsLoading(false));
-  }, [circuitRegistry.size]);
+  }, [subCircuitRegistry.size]);
 
   return (
     <>
       <Container className="em-page-header-container">
         <Header as="h2" className="em-page-header">
-          Circuits
+          Sub Circuits
         </Header>
         <Button
           as={Link}
-          to="/circuitsForm/0"
+          to="/subCircuitsForm/0"
           floated="right"
           color="teal"
           icon="plus"
@@ -43,8 +39,8 @@ export default observer(function CircuitList() {
       </Container>
 
       {isLoading ? (
-        <LoadingComponent content="Loading circuits..." />
-      ) : circuitRegistry.size <= 0 ? (
+        <LoadingComponent content="Loading sub circuits..." />
+      ) : subCircuitRegistry.size <= 0 ? (
         <BlankSlate />
       ) : (
         <Table stackable>
@@ -56,9 +52,12 @@ export default observer(function CircuitList() {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {circuits &&
-              circuits.map((circuit) => (
-                <CircuitListItem key={circuit.id} circuit={circuit} />
+            {subCircuits &&
+              subCircuits.map((subCircuit) => (
+                <SubCircuitListItem
+                  key={subCircuit.id}
+                  subCircuit={subCircuit}
+                />
               ))}
           </Table.Body>
         </Table>

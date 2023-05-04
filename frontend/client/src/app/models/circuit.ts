@@ -13,5 +13,5 @@ export interface CircuitFormValues {
     name: string;
     installation_date: Date;
     meter_id: number;
-    parent_circuit_id: number;
+    parent_circuit_id: number | null;
 }

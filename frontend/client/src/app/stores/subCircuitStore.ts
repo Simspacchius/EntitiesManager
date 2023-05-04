@@ -10,24 +10,9 @@ export default class SubCircuitStore {
     makeAutoObservable(this);
   }
 
-  get circuits() {
+  get subCircuits() {
     return Array.from(this.subCircuitRegistry.values());
   }
-
-  loadCircuitsByMeter = async (meterId: number) => {
-    try {
-      const circuits = await agent.Circuits.listByMeter(meterId);
-      runInAction(() => {
-        this.clearCircuits();
-        circuits.forEach((circuit) => {
-          this.setCircuit(circuit);
-        });
-        this.sortCircuits();
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   loadCircuitsByParentCircuit = async (parentCircuitId: number) => {
     try {
@@ -35,6 +20,7 @@ export default class SubCircuitStore {
         parentCircuitId
       );
       runInAction(() => {
+        this.clearCircuits();
         circuits.forEach((circuit) => {
           this.setCircuit(circuit);
         });
@@ -119,7 +105,7 @@ export default class SubCircuitStore {
   };
 
   private sortCircuits = () => {
-    const sortedCircuits = this.circuits.sort((a, b) => b.id - a.id);
+    const sortedCircuits = this.subCircuits.sort((a, b) => b.id - a.id);
     this.clearCircuits();
     sortedCircuits.forEach((circuit) => {
       this.setCircuit(circuit);

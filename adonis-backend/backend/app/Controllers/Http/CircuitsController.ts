@@ -12,10 +12,9 @@ export default class CircuitsController {
 
   public async getAllByMeterId({ params, response }) {
     const { meterId }: { meterId: Number } = params;
-    const entities = await Database.from("circuits").where(
-      "meter_id",
-      meterId.toString()
-    );
+    const entities = await Database.from("circuits")
+      .where("meter_id", meterId.toString())
+      .where("is_main", true);
     return response.ok(entities);
   }
 

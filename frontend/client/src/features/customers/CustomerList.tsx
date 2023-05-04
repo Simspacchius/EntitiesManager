@@ -5,6 +5,7 @@ import { Header, Table, Button, Container, Divider } from "semantic-ui-react";
 import { useStore } from "../../app/stores/store";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import CustomerListItem from "./CustomerListItem";
+import BlankSlate from "../../app/common/BlankSlate";
 
 export default observer(function CustomerList() {
   const { customerStore } = useStore();
@@ -37,26 +38,28 @@ export default observer(function CustomerList() {
 
       {isLoading ? (
         <LoadingComponent content="Loading customers..." />
+      ) : customerRegistry.size <= 0 ? (
+        <BlankSlate />
       ) : (
         <>
-          <Divider className="em-divider" />
-          <Table stackable>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Email</Table.HeaderCell>
-                <Table.HeaderCell>Vat Number</Table.HeaderCell>
-                <Table.HeaderCell textAlign="right">Actions</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {customers &&
-                customers.map((customer) => (
-                  <CustomerListItem key={customer.id} customer={customer} />
-                ))}
-            </Table.Body>
-          </Table>
-        </>
+        <Divider className="em-divider" />
+        <Table stackable>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>Email</Table.HeaderCell>
+              <Table.HeaderCell>Vat Number</Table.HeaderCell>
+              <Table.HeaderCell textAlign="right">Actions</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {customers &&
+              customers.map((customer) => (
+                <CustomerListItem key={customer.id} customer={customer} />
+              ))}
+          </Table.Body>
+        </Table>
+      </>
       )}
     </>
   );

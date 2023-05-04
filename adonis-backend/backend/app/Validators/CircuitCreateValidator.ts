@@ -10,7 +10,7 @@ export default class CircuitCreateValidator {
       format: "iso",
     }),
     meter_id: schema.number([rules.exists({ table: "meters", column: "id" })]),
-    parent_circuit_id: schema.number.optional([
+    parent_circuit_id: schema.number.nullableAndOptional([
       rules.exists({
         table: "circuits",
         column: "id",

@@ -5,6 +5,7 @@ import { Header, Table, Button, Container } from "semantic-ui-react";
 import { useStore } from "../../app/stores/store";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import MeterListItem from "./MeterListItem";
+import BlankSlate from "../../app/common/BlankSlate";
 
 export default observer(function MeterList() {
   const { meterStore, siteStore } = useStore();
@@ -38,21 +39,23 @@ export default observer(function MeterList() {
 
       {isLoading ? (
         <LoadingComponent content="Loading meters..." />
+      ) : meterRegistry.size <= 0 ? (
+        <BlankSlate />
       ) : (
         <Table stackable>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Name</Table.HeaderCell>
-              <Table.HeaderCell>Serial Number</Table.HeaderCell>
-              <Table.HeaderCell>Installation Date</Table.HeaderCell>
-              <Table.HeaderCell textAlign="right">Actions</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {meters &&
-              meters.map((meter) => <MeterListItem key={meter.id} meter={meter} />)}
-          </Table.Body>
-        </Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell>Serial Number</Table.HeaderCell>
+            <Table.HeaderCell>Installation Date</Table.HeaderCell>
+            <Table.HeaderCell textAlign="right">Actions</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {meters &&
+            meters.map((meter) => <MeterListItem key={meter.id} meter={meter} />)}
+        </Table.Body>
+      </Table>
       )}
     </>
   );

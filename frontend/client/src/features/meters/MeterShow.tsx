@@ -89,7 +89,7 @@ export default observer(function MeterShow() {
           </div>
           <Divider className="em-divider" />
           <Container>
-            <CircuitList />
+            <CircuitList/>
           </Container>
         </>
       )}
