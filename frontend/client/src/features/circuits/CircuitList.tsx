@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Header,
   Table,

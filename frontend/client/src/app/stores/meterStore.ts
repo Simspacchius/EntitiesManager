@@ -61,16 +61,13 @@ export default class MeterStore {
       });
       return newMeter.id;
     } catch (error) {
-       console.log(error);
+      console.log(error);
     }
   };
 
   updateMeter = async (id: number, meter: MeterFormValues) => {
     try {
-      const updatedMeter: Meter = await agent.Meters.update(
-        id,
-        meter
-      );
+      const updatedMeter: Meter = await agent.Meters.update(id, meter);
       runInAction(() => {
         this.meterRegistry.set(updatedMeter.id, updatedMeter);
         this.sortMeters();

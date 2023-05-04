@@ -1,12 +1,13 @@
-import {Loader} from "semantic-ui-react";
+import { Loader } from "semantic-ui-react";
 
 interface Props {
-    inverted?: boolean;
-    content?: string;
+  inverted?: boolean;
+  content?: string;
 }
 
-export default function LoadingComponent({inverted = true, content = 'Loading...'}: Props) {
-    return (
-        <Loader active inline='centered' content={content} />
-    )
+export default function LoadingComponent({
+  inverted = true,
+  content = "Loading...",
+}: Props) {
+  return <Loader active inline="centered" content={content} />;
 }

@@ -61,16 +61,13 @@ export default class CircuitStore {
       });
       return newCircuit.id;
     } catch (error) {
-       console.log(error);
+      console.log(error);
     }
   };
 
   updateCircuit = async (id: number, circuit: CircuitFormValues) => {
     try {
-      const updatedCircuit: Circuit = await agent.Circuits.update(
-        id,
-        circuit
-      );
+      const updatedCircuit: Circuit = await agent.Circuits.update(id, circuit);
       runInAction(() => {
         this.circuitRegistry.set(updatedCircuit.id, updatedCircuit);
         this.sortCircuits();

@@ -10,7 +10,6 @@ import {
 } from "semantic-ui-react";
 import { useStore } from "../../app/stores/store";
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import { Meter } from "../../app/models/meter";
 import MeterCard from "./MeterCard";
 import SiteCard from "../sites/SiteCard";
 import CustomerCard from "../customers/CustomerCard";

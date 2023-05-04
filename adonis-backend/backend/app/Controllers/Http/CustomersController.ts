@@ -1,4 +1,3 @@
-import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Customer from "App/Models/Customer";
 import CustomerCreateValidator from "App/Validators/CustomerCreateValidator";

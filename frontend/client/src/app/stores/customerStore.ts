@@ -60,7 +60,7 @@ export default class CustomerStore {
       });
       return newCustomer.id;
     } catch (error) {
-       console.log(error);
+      console.log(error);
     }
   };
 
