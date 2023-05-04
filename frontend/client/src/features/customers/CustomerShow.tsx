@@ -12,7 +12,7 @@ import { useStore } from "../../app/stores/store";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { Customer } from "../../app/models/customer";
 import CustomerCard from "./CustomerCard";
-import EmptyCard from "../../app/layout/EmptyCard"
+import EmptyCard from "../../app/layout/EmptyCard";
 import SiteList from "../sites/SiteList";
 
 export default observer(function CustomerShow() {
@@ -60,15 +60,16 @@ export default observer(function CustomerShow() {
         <LoadingComponent content="Loading customer..." />
       ) : (
         <>
+          <Divider className="em-divider" />
           <div className="em-cards-container">
             {selectedCustomer && <CustomerCard customer={selectedCustomer} />}
-            <EmptyCard/>
-            <EmptyCard/>
-            <EmptyCard/>
+            <EmptyCard />
+            <EmptyCard />
+            <EmptyCard />
           </div>
           <Divider className="em-divider" />
           <Container>
-            <SiteList/>
+            <SiteList />
           </Container>
         </>
       )}

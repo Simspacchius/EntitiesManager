@@ -12,8 +12,8 @@ import { useStore } from "../../app/stores/store";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { Site } from "../../app/models/site";
 import SiteCard from "./SiteCard";
-import CustomerCard from "../customers/CustomerCard"
-import EmptyCard from "../../app/layout/EmptyCard"
+import CustomerCard from "../customers/CustomerCard";
+import EmptyCard from "../../app/layout/EmptyCard";
 import MeterList from "../meters/MeterList";
 
 export default observer(function SiteShow() {
@@ -33,23 +33,23 @@ export default observer(function SiteShow() {
 
   return (
     <>
-          <Container className="em-page-breadcrumb-container">
-            <Breadcrumb>
-              <Breadcrumb.Section link as={Link} to="/customers">
-                Customers
-              </Breadcrumb.Section>
-              <Breadcrumb.Divider icon="right arrow" />
-              <Breadcrumb.Section
-                link
-                as={Link}
-                to={`/customersShow/${selectedCustomer!.id}`}
-              >
-                Customer
-              </Breadcrumb.Section>
-              <Breadcrumb.Divider icon="right arrow" />
-              <Breadcrumb.Section active>Site</Breadcrumb.Section>
-            </Breadcrumb>
-          </Container>
+      <Container className="em-page-breadcrumb-container">
+        <Breadcrumb>
+          <Breadcrumb.Section link as={Link} to="/customers">
+            Customers
+          </Breadcrumb.Section>
+          <Breadcrumb.Divider icon="right arrow" />
+          <Breadcrumb.Section
+            link
+            as={Link}
+            to={`/customersShow/${selectedCustomer!.id}`}
+          >
+            Customer
+          </Breadcrumb.Section>
+          <Breadcrumb.Divider icon="right arrow" />
+          <Breadcrumb.Section active>Site</Breadcrumb.Section>
+        </Breadcrumb>
+      </Container>
 
       <Container className="em-page-header-container">
         <Header as="h2" className="em-page-header">
@@ -70,15 +70,16 @@ export default observer(function SiteShow() {
         <LoadingComponent content="Loading site..." />
       ) : (
         <>
+          <Divider className="em-divider" />
           <div className="em-cards-container">
             {selectedSite && <SiteCard site={selectedSite} />}
             {selectedCustomer && <CustomerCard customer={selectedCustomer} />}
-            <EmptyCard/>
-            <EmptyCard/>
+            <EmptyCard />
+            <EmptyCard />
           </div>
           <Divider className="em-divider" />
           <Container>
-            <MeterList/>
+            <MeterList />
           </Container>
         </>
       )}

@@ -6,6 +6,8 @@ import SiteShow from "../../features/sites/SiteShow"
 import SiteForm from "../../features/sites/SiteForm"
 import MeterShow from "../../features/meters/MeterShow"
 import MeterForm from "../../features/meters/MeterForm"
+import CircuitShow from "../../features/circuits/CircuitShow"
+import CircuitForm from "../../features/circuits/CircuitForm"
 import NotFound from "../../features/errors/NotFound";
 import ServerError from "../../features/errors/ServerError";
 import TestErrors from "../../features/errors/TestError";
@@ -23,9 +25,8 @@ export const routes: RouteObject[] = [
             {path: 'sitesForm/:id', element: <SiteForm />},
             {path: 'metersShow/:id', element: <MeterShow />},
             {path: 'metersForm/:id', element: <MeterForm />},
-            {path: 'circuitsShow/:id', element: <CustomerShow />},
-            {path: 'circuitsForm/:id', element: <CustomerForm />},
-            {path: 'subCircuitsShow/:id', element: <CustomerShow />},
+            {path: 'circuitsShow/:id', element: <CircuitShow />},
+            {path: 'circuitsForm/:id', element: <CircuitForm />},
             {path: 'subCircuitsForm/:id', element: <CustomerForm />},
             {path: 'errors', element: <TestErrors />},
             {path: 'not-found', element: <NotFound />},

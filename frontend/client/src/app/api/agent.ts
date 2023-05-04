@@ -19,7 +19,7 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 axios.interceptors.response.use(async response => {
     // This is done on purpose to test the loading spinner
-    await sleep(1000);
+    //await sleep(1000);
     return response;
 }, (error: AxiosError) => {
     const {data, status, config} = error.response as AxiosResponse;

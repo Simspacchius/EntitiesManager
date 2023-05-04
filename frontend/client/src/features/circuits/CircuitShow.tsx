@@ -10,16 +10,17 @@ import {
 } from "semantic-ui-react";
 import { useStore } from "../../app/stores/store";
 import LoadingComponent from "../../app/layout/LoadingComponent";
-import { Meter } from "../../app/models/meter";
-import MeterCard from "./MeterCard";
+import { Circuit } from "../../app/models/circuit";
+import CircuitCard from "./CircuitCard";
+import MeterCard from "../meters/MeterCard";
 import SiteCard from "../sites/SiteCard";
 import CustomerCard from "../customers/CustomerCard";
-import EmptyCard from "../../app/layout/EmptyCard";
 import CircuitList from "../circuits/CircuitList";
 
-export default observer(function MeterShow() {
-  const { meterStore, siteStore, customerStore } = useStore();
-  const { selectedMeter, loadMeter } = meterStore;
+export default observer(function CircuitShow() {
+  const { circuitStore, meterStore, siteStore, customerStore } = useStore();
+  const { selectedCircuit, loadCircuit } = circuitStore;
+  const { selectedMeter } = meterStore;
   const { selectedSite } = siteStore;
   const { selectedCustomer } = customerStore;
   const id = parseInt(useParams().id || "");
@@ -28,7 +29,7 @@ export default observer(function MeterShow() {
 
   useEffect(() => {
     setIsLoading(true);
-    loadMeter(id)
+    loadCircuit(id)
       .catch((error) => console.log(JSON.stringify(error)))
       .finally(() => setIsLoading(false));
   }, []);
@@ -57,17 +58,25 @@ export default observer(function MeterShow() {
             Site
           </Breadcrumb.Section>
           <Breadcrumb.Divider icon="right arrow" />
-          <Breadcrumb.Section active>Meter</Breadcrumb.Section>
+          <Breadcrumb.Section
+            link
+            as={Link}
+            to={`/metersShow/${selectedMeter!.id}`}
+          >
+            Meter
+          </Breadcrumb.Section>
+          <Breadcrumb.Divider icon="right arrow" />
+          <Breadcrumb.Section active>Circuit</Breadcrumb.Section>
         </Breadcrumb>
       </Container>
 
       <Container className="em-page-header-container">
         <Header as="h2" className="em-page-header">
-          Meter
+          Circuit
         </Header>
         <Button
           as={Link}
-          to={`/sitesShow/${selectedSite!.id}`}
+          to={`/metersShow/${selectedMeter!.id}`}
           floated="right"
           basic
           color="teal"
@@ -77,20 +86,20 @@ export default observer(function MeterShow() {
       </Container>
 
       {isLoading ? (
-        <LoadingComponent content="Loading meter..." />
+        <LoadingComponent content="Loading circuit..." />
       ) : (
         <>
           <Divider className="em-divider" />
           <div className="em-cards-container">
+            {selectedCircuit && <CircuitCard circuit={selectedCircuit} />}
             {selectedMeter && <MeterCard meter={selectedMeter} />}
             {selectedSite && <SiteCard site={selectedSite} />}
             {selectedCustomer && <CustomerCard customer={selectedCustomer} />}
-            <EmptyCard />
           </div>
           <Divider className="em-divider" />
-          <Container>
+          {/* <Container>
             <CircuitList />
-          </Container>
+          </Container> */}
         </>
       )}
     </>
