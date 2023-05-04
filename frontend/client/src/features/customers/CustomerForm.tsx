@@ -8,6 +8,7 @@ import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { CustomerFormValues } from "../../app/models/customer";
 import MyTextInput from "../../app/common/form/MyTextInput";
+import agent from "../../app/api/agent";
 
 export default observer(function CustomerForm() {
   const { customerStore } = useStore();
@@ -38,7 +39,6 @@ export default observer(function CustomerForm() {
   }, []);
 
   function handleFormSubmit(
-    id: number,
     customerForm: CustomerFormValues,
     formikBag: FormikHelpers<CustomerFormValues>
   ) {
@@ -85,11 +85,29 @@ export default observer(function CustomerForm() {
       .trim()
       .email("Email not valid")
       .required("Email required")
-      .max(255, "Allowed maximum is 255 characters"),
+      .max(255, "Allowed maximum is 255 characters")
+      .test(
+        "customer-unique-email",
+        "Email already in use",
+        async (value, testContext) =>
+          await agent.Customers.checkEmailUnique({
+            id: id,
+            value: value,
+          })
+      ),
     vat_number: Yup.string()
       .trim()
       .required("Vat Number required")
-      .max(20, "Allowed maximum is 20 characters"),
+      .max(20, "Allowed maximum is 20 characters")
+      .test(
+        "customer-unique-vat-number",
+        "Vat Number already in use",
+        async (value, testContext) =>
+          await agent.Customers.checkVatNumberUnique({
+            id: id,
+            value: value,
+          })
+      ),
   });
 
   return (
@@ -117,10 +135,10 @@ export default observer(function CustomerForm() {
           <Formik
             enableReinitialize
             validationSchema={validationSchema}
+            validateOnChange={false}
+            validateOnBlur={true}
             initialValues={customerForm}
-            onSubmit={(values, actions) =>
-              handleFormSubmit(id, values, actions)
-            }
+            onSubmit={(values, actions) => handleFormSubmit(values, actions)}
           >
             {({ handleSubmit, isValid, isSubmitting, dirty }) => (
               <Form

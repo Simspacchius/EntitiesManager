@@ -4,6 +4,7 @@ import { Customer, CustomerFormValues } from '../models/customer';
 import { Site, SiteFormValues } from '../models/site';
 import { Meter, MeterFormValues } from '../models/meter';
 import { Circuit, CircuitFormValues } from '../models/circuit';
+import { CheckUnique } from '../models/checkUnique'
 import { router } from '../router/Routes';
 import { store } from '../stores/store';
 
@@ -69,7 +70,9 @@ const Customers = {
     details: (id: number) => requests.get<Customer>(`/customers/${id}`),
     create: (customer: CustomerFormValues) => requests.post<Customer>('/customers', customer),
     update: (id: number, customer: CustomerFormValues) => requests.put<Customer>(`/customers/${id}`, customer),
-    delete: (id: number) => axios.delete(`/customers/${id}`)
+    delete: (id: number) => requests.del(`/customers/${id}`),
+    checkEmailUnique: (checkUnique: CheckUnique) => requests.post<boolean>('/customersCheckEmailUnique', checkUnique),
+    checkVatNumberUnique: (checkUnique: CheckUnique) => requests.post<boolean>('/customersCheckVatNumberUnique', checkUnique)
 }
 
 const Sites = {
@@ -78,7 +81,7 @@ const Sites = {
     details: (id: number) => requests.get<Site>(`/sites/${id}`),
     create: (site: SiteFormValues) => requests.post<Site>('/sites', site),
     update: (id: number, site: SiteFormValues) => requests.put<Site>(`/sites/${id}`, site),
-    delete: (id: number) => axios.delete(`/sites/${id}`)
+    delete: (id: number) => requests.del(`/sites/${id}`)
 }
 
 const Meters = {
@@ -87,7 +90,9 @@ const Meters = {
     details: (id: number) => requests.get<Meter>(`/meters/${id}`),
     create: (meter: MeterFormValues) => requests.post<Meter>('/meters', meter),
     update: (id: number, meter: MeterFormValues) => requests.put<Meter>(`/meters/${id}`, meter),
-    delete: (id: number) => axios.delete(`/meters/${id}`)
+    delete: (id: number) => requests.del(`/meters/${id}`),
+    checkSerialNumberUnique: (checkUnique: CheckUnique) => requests.post<boolean>('/metersCheckSerialNumberUnique', checkUnique)
+
 }
 
 const Circuits = {
@@ -97,7 +102,7 @@ const Circuits = {
     details: (id: number) => requests.get<Circuit>(`/circuits/${id}`),
     create: (circuit: CircuitFormValues) => requests.post<Circuit>('/circuits', circuit),
     update: (id: number, circuit: CircuitFormValues) => requests.put<Circuit>(`/circuits/${id}`, circuit),
-    delete: (id: number) => axios.delete(`/circuits/${id}`)
+    delete: (id: number) => requests.del(`/circuits/${id}`)
 }
 
 const agent = {

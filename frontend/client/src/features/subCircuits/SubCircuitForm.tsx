@@ -11,9 +11,15 @@ import MyTextInput from "../../app/common/form/MyTextInput";
 import MyDateInput from "../../app/common/form/MyDateInput";
 
 export default observer(function SubCircuitForm() {
-  const { subCircuitStore, circuitStore, meterStore, siteStore, customerStore } = useStore();
+  const {
+    subCircuitStore,
+    circuitStore,
+    meterStore,
+    siteStore,
+    customerStore,
+  } = useStore();
   const { createCircuit, updateCircuit, deleteCircuit, loadCircuit } =
-  subCircuitStore;
+    subCircuitStore;
   const { selectedCircuit } = circuitStore;
   const { selectedMeter } = meterStore;
   const { selectedSite } = siteStore;
@@ -48,7 +54,6 @@ export default observer(function SubCircuitForm() {
   }, []);
 
   function handleFormSubmit(
-    id: number,
     circuitForm: CircuitFormValues,
     formikBag: FormikHelpers<CircuitFormValues>
   ) {
@@ -56,7 +61,8 @@ export default observer(function SubCircuitForm() {
     if (id === 0) {
       createCircuit(circuitForm)
         .then((newId) => {
-          if (newId && newId > 0) navigate(`/circuitsShow/${selectedCircuit!.id}`);
+          if (newId && newId > 0)
+            navigate(`/circuitsShow/${selectedCircuit!.id}`);
         })
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => {
@@ -151,11 +157,13 @@ export default observer(function SubCircuitForm() {
           <Formik
             enableReinitialize
             validationSchema={validationSchema}
+            validateOnChange={false}
+            validateOnBlur={true}
             initialValues={circuitForm}
             onSubmit={(values, actions) => {
               values.meter_id = selectedMeter!.id;
               values.parent_circuit_id = selectedCircuit!.id;
-              handleFormSubmit(id, values, actions);
+              handleFormSubmit(values, actions);
             }}
           >
             {({ handleSubmit, isValid, isSubmitting, dirty }) => (

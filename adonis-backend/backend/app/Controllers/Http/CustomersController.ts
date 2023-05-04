@@ -1,7 +1,10 @@
-// import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import Database from "@ioc:Adonis/Lucid/Database";
 import Customer from "App/Models/Customer";
 import CustomerCreateValidator from "App/Validators/CustomerCreateValidator";
 import CustomerUpdateValidator from "App/Validators/CustomerUpdateValidator";
+import UniqueCheckValidator from "App/Validators/UniqueCheckValidator";
+import UniqueCheck from "contracts/UniqueCheck";
 
 export default class CustomersController {
   public async index({ response }) {
@@ -58,5 +61,33 @@ export default class CustomersController {
     }
     await entity.delete();
     return response.ok({ message: "Deleted successfully." });
+  }
+
+  public async checkEmailUnique({ request, response }) {
+    try {
+      const payload: UniqueCheck = await request.validate(UniqueCheckValidator);
+      const customers = await Database.from("customers")
+        .where("email", payload.value)
+        .whereNot("id", payload.id)
+        .count("*", "total");
+      const isUnique: boolean = customers[0].total == 0;
+      return response.ok(isUnique);
+    } catch (error) {
+      response.badRequest(error.messages);
+    }
+  }
+
+  public async checkVatNumberUnique({ request, response }) {
+    try {
+      const payload: UniqueCheck = await request.validate(UniqueCheckValidator);
+      const customers = await Database.from("customers")
+        .where("vat_number", payload.value)
+        .whereNot("id", payload.id)
+        .count("*", "total");
+      const isUnique: boolean = customers[0].total == 0;
+      return response.ok(isUnique);
+    } catch (error) {
+      response.badRequest(error.messages);
+    }
   }
 }

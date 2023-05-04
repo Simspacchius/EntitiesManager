@@ -3,6 +3,8 @@ import Database from "@ioc:Adonis/Lucid/Database";
 import Meter from "App/Models/Meter";
 import MeterCreateValidator from "App/Validators/MeterCreateValidator";
 import MeterUpdateValidator from "App/Validators/MeterUpdateValidator";
+import UniqueCheckValidator from "App/Validators/UniqueCheckValidator";
+import UniqueCheck from "contracts/UniqueCheck";
 
 export default class MetersController {
   public async index({ response }) {
@@ -69,5 +71,21 @@ export default class MetersController {
     }
     await entity.delete();
     return response.ok({ message: "Deleted successfully." });
+  }
+
+  public async checkSerialNumberUnique({ request, response }) {
+    try {
+      const payload: UniqueCheck = await request.validate(UniqueCheckValidator);
+      console.log(JSON.stringify(payload))
+      const meters = await Database.from("meters")
+        .where("serial_number", payload.value)
+        .whereNot("id", payload.id)
+        .count("*", "total");
+      const isUnique: boolean = meters[0].total == 0;
+      console.log(isUnique);
+      return response.ok(isUnique);
+    } catch (error) {
+      response.badRequest(error.messages);
+    }
   }
 }

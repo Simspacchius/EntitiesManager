@@ -41,7 +41,6 @@ export default observer(function SiteForm() {
   }, []);
 
   function handleFormSubmit(
-    id: number,
     siteForm: SiteFormValues,
     formikBag: FormikHelpers<SiteFormValues>
   ) {
@@ -133,10 +132,12 @@ export default observer(function SiteForm() {
           <Formik
             enableReinitialize
             validationSchema={validationSchema}
+            validateOnChange={false}
+            validateOnBlur={true}
             initialValues={siteForm}
             onSubmit={(values, actions) => {
               values.customer_id = selectedCustomer!.id;
-              handleFormSubmit(id, values, actions);
+              handleFormSubmit(values, actions);
             }}
           >
             {({ handleSubmit, isValid, isSubmitting, dirty }) => (

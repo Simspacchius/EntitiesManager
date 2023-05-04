@@ -47,7 +47,6 @@ export default observer(function CircuitForm() {
   }, []);
 
   function handleFormSubmit(
-    id: number,
     circuitForm: CircuitFormValues,
     formikBag: FormikHelpers<CircuitFormValues>
   ) {
@@ -142,11 +141,13 @@ export default observer(function CircuitForm() {
           <Formik
             enableReinitialize
             validationSchema={validationSchema}
+            validateOnChange={false}
+            validateOnBlur={true}
             initialValues={circuitForm}
             onSubmit={(values, actions) => {
               values.meter_id = selectedMeter!.id;
               values.parent_circuit_id = null;
-              handleFormSubmit(id, values, actions);
+              handleFormSubmit(values, actions);
             }}
           >
             {({ handleSubmit, isValid, isSubmitting, dirty }) => (

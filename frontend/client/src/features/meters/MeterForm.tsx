@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { MeterFormValues } from "../../app/models/meter";
 import MyTextInput from "../../app/common/form/MyTextInput";
 import MyDateInput from "../../app/common/form/MyDateInput";
+import agent from "../../app/api/agent";
 
 export default observer(function MeterForm() {
   const { meterStore, siteStore, customerStore } = useStore();
@@ -33,8 +34,8 @@ export default observer(function MeterForm() {
       setIsLoading(true);
       loadMeter(id)
         .then((meter) => {
-            meter!.installation_date = new Date(meter!.installation_date);
-            setMeterForm(meter!)  
+          meter!.installation_date = new Date(meter!.installation_date);
+          setMeterForm(meter!);
         })
         .catch((error) => console.log(JSON.stringify(error)))
         .finally(() => setIsLoading(false));
@@ -44,7 +45,6 @@ export default observer(function MeterForm() {
   }, []);
 
   function handleFormSubmit(
-    id: number,
     meterForm: MeterFormValues,
     formikBag: FormikHelpers<MeterFormValues>
   ) {
@@ -90,7 +90,16 @@ export default observer(function MeterForm() {
     serial_number: Yup.string()
       .trim()
       .required("Serial Number required")
-      .max(30, "Allowed maximum is 30 characters"),
+      .max(30, "Allowed maximum is 30 characters")
+      .test(
+        "meter-unique-serial-number",
+        "Serial Number already in use",
+        async (value, testContext) =>
+          await agent.Meters.checkSerialNumberUnique({
+            id: id,
+            value: value,
+          })
+      ),
     installation_date: Yup.date().required("Installation Date required"),
   });
 
@@ -135,10 +144,12 @@ export default observer(function MeterForm() {
           <Formik
             enableReinitialize
             validationSchema={validationSchema}
+            validateOnChange={false}
+            validateOnBlur={true}
             initialValues={meterForm}
             onSubmit={(values, actions) => {
               values.site_id = selectedSite!.id;
-              handleFormSubmit(id, values, actions);
+              handleFormSubmit(values, actions);
             }}
           >
             {({ handleSubmit, isValid, isSubmitting, dirty }) => (

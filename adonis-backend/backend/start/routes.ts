@@ -21,12 +21,15 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.resource('customers', 'CustomersController')
+Route.post('/customersCheckEmailUnique','CustomersController.checkEmailUnique')
+Route.post('/customersCheckVatNumberUnique','CustomersController.checkVatNumberUnique')
 
 Route.resource('sites', 'SitesController')
 Route.get('/sitesByCustomerId/:customerId', 'SitesController.getAllByCustomerId')
 
 Route.resource('meters', 'MetersController')
 Route.get('/metersBySiteId/:siteId', 'MetersController.getAllBySiteId')
+Route.post('/metersCheckSerialNumberUnique','MetersController.checkSerialNumberUnique')
 
 Route.resource('circuits', 'CircuitsController')
 Route.get('/circuitsByMeterId/:meterId', 'CircuitsController.getAllByMeterId')
